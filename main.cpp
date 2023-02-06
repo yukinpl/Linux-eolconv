@@ -96,14 +96,14 @@ bool const Conv( char const * source , char const * target )
 	ifs.seekg( std::ios::beg ) ;
 	
 	char const linefeed[ 2 ] = { '\r' , '\n' } ;
-	char buf[ 2048 + 2 ] ;
+	char buf[ 1 ] ;
 	while( true )
 	{
 		if( ifs.eof() )
 		{
 			break ;
 		}
-
+/*
 		ifs.read( buf , 1 ) ;
 
 		if( linefeed[ 0 ] == buf[ 0 ] )
@@ -121,6 +121,25 @@ bool const Conv( char const * source , char const * target )
 		else
 		{
 			ofs.write( buf , 1 ) ;
+		}
+*/
+		std::string line ;
+		std::getline( ifs , line ) ;
+	
+		if( '\r' == line[ line.length() - 1 ] )
+		{
+			line = line.substr( 0 , line.length() - 1 ) ;
+		}
+
+		ofs.write( line.c_str() , line.length() ) ;
+
+		if( TYPE::DOS == type )
+		{
+			ofs.write( &( linefeed[ 1 ] ) , 1 ) ;
+		}
+		else if( TYPE::UNIX == type )
+		{
+			ofs.write( linefeed , 2 ) ;
 		}
 	}
 
